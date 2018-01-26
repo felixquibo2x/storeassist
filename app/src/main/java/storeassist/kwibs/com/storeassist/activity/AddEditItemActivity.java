@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -47,6 +50,7 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
     public static final String IMAGE_FILE_PREFIX = "ITEM_IMAGE_";
 
     private static final int PICK_IMAGE = 100;
+    private static final int CAPTURE_IMAGE = 101;
 
     private StoreAssistDBHelper helper;
     private ItemDao itemDao;
@@ -62,7 +66,6 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
     private static int camId = Camera.CameraInfo.CAMERA_FACING_BACK;
-    private static final String BARCODE_SCAN_FRAGMENT_TAG = "barcodeScan";
 
     private String tmpName;
     private String tmpPrice;
@@ -141,7 +144,23 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
         imageView.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddEditItemActivity.this);
+                builder.setTitle("UPLOAD PICTURE");
+                builder.setNeutralButton("CAMERA", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(i, CAPTURE_IMAGE);
+                    }
+                });
+                builder.setPositiveButton("MEDIA GALLERY", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        openGallery();
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
     }
@@ -164,6 +183,53 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
                 Toast.makeText(this, "Error: "+ex.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
+        if(resultCode == RESULT_OK && requestCode == CAPTURE_IMAGE){
+            Bundle b = data.getExtras();
+            Bitmap uploadImage = (Bitmap) b.get("data");
+            this.imageArray = getBitmapBytes(uploadImage);
+            this.imageView.setImageBitmap(uploadImage);
+        }
+    }
+
+    private byte[] getBitmapBytes(Bitmap bitmap)
+    {
+        int chunkNumbers = 10;
+        int bitmapSize = bitmap.getRowBytes() * bitmap.getHeight();
+        byte[] imageBytes = new byte[bitmapSize];
+        int rows, cols;
+        int chunkHeight, chunkWidth;
+        rows = cols = (int) Math.sqrt(chunkNumbers);
+        chunkHeight = bitmap.getHeight() / rows;
+        chunkWidth = bitmap.getWidth() / cols;
+
+        int yCoord = 0;
+        int bitmapsSizes = 0;
+
+        for (int x = 0; x < rows; x++){
+            int xCoord = 0;
+            for (int y = 0; y < cols; y++){
+                Bitmap bitmapChunk = Bitmap.createBitmap(bitmap, xCoord, yCoord, chunkWidth, chunkHeight);
+                byte[] bitmapArray = getBytesFromBitmapChunk(bitmapChunk);
+                System.arraycopy(bitmapArray, 0, imageBytes, bitmapsSizes, bitmapArray.length);
+                bitmapsSizes = bitmapsSizes + bitmapArray.length;
+                xCoord += chunkWidth;
+
+                bitmapChunk.recycle();
+                bitmapChunk = null;
+            }
+            yCoord += chunkHeight;
+        }
+
+        return imageBytes;
+    }
+
+
+    private byte[] getBytesFromBitmapChunk(Bitmap bitmap){
+        int bitmapSize = bitmap.getRowBytes() * bitmap.getHeight();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bitmapSize);
+        bitmap.copyPixelsToBuffer(byteBuffer);
+        byteBuffer.rewind();
+        return byteBuffer.array();
     }
 
     @Override
