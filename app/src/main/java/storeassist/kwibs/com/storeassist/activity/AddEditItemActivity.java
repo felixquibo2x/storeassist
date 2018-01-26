@@ -100,34 +100,12 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
         registerOnImageClick();
     }
 
-    @Override
-    public void onBackPressed() {
-        FragmentManager fm = getFragmentManager();
-        Fragment frag = fm.findFragmentByTag(BARCODE_SCAN_FRAGMENT_TAG);
-        if(frag != null){
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.remove(frag);
-            fm.popBackStack();
-            ft.commit();
-            if(this.scannerView != null) {
-                this.scannerView.stopCamera();
-            }
-        }else
-            super.onBackPressed();
-    }
-
     public void onClickScan(View view){
         int currApiVersion = Build.VERSION.SDK_INT;
         if(currApiVersion >= Build.VERSION_CODES.M){
             if(!checkPermission()){
                 requestPermission();
             }else{
-                FragmentManager fm = getFragmentManager();
-                Fragment frag = new Fragment();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.add(frag, BARCODE_SCAN_FRAGMENT_TAG);
-                ft.addToBackStack(BARCODE_SCAN_FRAGMENT_TAG);
-                ft.commit();
                 this.tmpName = editTextName.getText().toString();
                 this.tmpPrice = editTextPrice.getText().toString();
                 if(scannerView == null) {
@@ -258,8 +236,10 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        this.helper.close();
-        this.scannerView.stopCamera();
+        if(this.helper != null)
+            this.helper.close();
+        if(this.scannerView != null)
+            this.scannerView.stopCamera();
     }
 
     private boolean checkPermission(){
