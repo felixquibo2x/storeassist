@@ -67,6 +67,9 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
 
     private String tmpName;
     private String tmpPrice;
+    private String tmpBarcode;
+
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
         editTextPrice = (EditText) findViewById(R.id.price);
         editTextBarcode = (EditText) findViewById(R.id.barcode);
         imageView = (ImageView) findViewById(R.id.image_view_add);
+        this.fragmentManager = getFragmentManager();
         this.scannerView = null;
 
         Intent intent = getIntent();
@@ -108,11 +112,17 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
             }else{
                 this.tmpName = editTextName.getText().toString();
                 this.tmpPrice = editTextPrice.getText().toString();
+                this.tmpBarcode = editTextBarcode.getText().toString();
                 if(scannerView == null) {
                     scannerView = new ZXingScannerView(this);
                 }
                 scannerView.setResultHandler(this);
                 setContentView(scannerView);
+
+                FragmentTransaction ft = this.fragmentManager.beginTransaction();
+                ft.addToBackStack("barcodeScanning");
+                ft.commit();
+
                 scannerView.startCamera();
             }
         }
@@ -154,6 +164,27 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
             }catch (Exception ex){
                 Toast.makeText(this, "Error: "+ex.getMessage(), Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(this.scannerView != null) {
+            setContentView(R.layout.add_item_page);
+            editTextBarcode = (EditText) findViewById(R.id.barcode);
+            editTextName = (EditText) findViewById(R.id.item_name);
+            editTextPrice = (EditText) findViewById(R.id.price);
+            imageView = (ImageView) findViewById(R.id.image_view_add);
+
+            editTextName.setText(this.tmpName);
+            editTextPrice.setText(this.tmpPrice);
+            editTextBarcode.setText(this.tmpBarcode);
+            if (this.imageArray != null)
+                this.imageView.setImageBitmap(BitmapFactory.decodeByteArray(this.imageArray, 0, this.imageArray.length));
+            registerOnImageClick();
+            this.scannerView.stopCamera();
+            this.scannerView = null;
         }
     }
 
@@ -257,6 +288,10 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
         if (currentApiVersion >= android.os.Build.VERSION_CODES.M) {
             if (checkPermission()) {
                 if(scannerView != null) {
+                    FragmentTransaction ft = this.fragmentManager.beginTransaction();
+                    ft.addToBackStack("barcodeScanning");
+                    ft.commit();
+
                     setContentView(scannerView);
                     scannerView.setResultHandler(this);
                     scannerView.startCamera();
@@ -325,6 +360,8 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
 
             registerOnImageClick();
             this.scannerView.stopCamera();
+            this.scannerView = null;
+            super.onBackPressed();
         }
     }
 
