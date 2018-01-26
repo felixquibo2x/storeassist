@@ -1,5 +1,7 @@
 package storeassist.kwibs.com.storeassist.activity;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -83,6 +85,13 @@ public class ItemsProductsActivity extends AppCompatActivity {
 
             return view;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        getFragmentManager().popBackStack(MainPageActivity.BACK_STACK_TAG_INITIAL, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        Intent i = new Intent(this, MainPageActivity.class);
+        startActivity(i);
     }
 
     @Override
