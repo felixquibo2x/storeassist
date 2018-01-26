@@ -73,6 +73,7 @@
             android:layout_alignLeft="@+id/button4"
             android:layout_alignStart="@+id/button4"
             android:layout_alignRight="@+id/button4"
-            android:layout_alignEnd="@+id/button4" />
+            android:layout_alignEnd="@+id/button4"
+            android:onClick="exit" />
     </RelativeLayout>
 </LinearLayout>

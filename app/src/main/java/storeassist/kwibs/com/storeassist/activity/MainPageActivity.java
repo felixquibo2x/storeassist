@@ -41,6 +41,9 @@ public class MainPageActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void exit(View view){
+    }
+
     @Override
     public void onBackPressed() {
     }
