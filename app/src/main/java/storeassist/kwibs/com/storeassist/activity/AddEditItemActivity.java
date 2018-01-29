@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.zxing.Result;
 
 import java.io.ByteArrayOutputStream;
@@ -135,9 +136,9 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
         editTextPrice.setText(new DecimalFormat("#,##0.00").format(this.item.getPrice()));
         editTextBarcode.setText(this.item.getBarcode());
         if(this.imageArray == null)
-            imageView.setImageResource(ItemsProductsActivity.DEFAULT_IMAGE);
+            Glide.with(getBaseContext()).load(ItemsProductsActivity.DEFAULT_IMAGE).into(this.imageView);
         else
-            imageView.setImageBitmap(BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length));
+            Glide.with(getBaseContext()).load(this.imageArray).into(this.imageView);
     }
 
     private void registerOnImageClick(){
@@ -178,7 +179,7 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
             try {
                 InputStream is = getContentResolver().openInputStream(imageUri);
                 this.imageArray = getBytes(is);
-                imageView.setImageURI(imageUri);
+                Glide.with(getBaseContext()).load(this.imageArray).into(this.imageView);
             }catch (Exception ex){
                 Toast.makeText(this, "Error: "+ex.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -186,7 +187,7 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
         if(resultCode == RESULT_OK && requestCode == CAPTURE_IMAGE){
             Bundle b = data.getExtras();
             Bitmap uploadImage = (Bitmap) b.get("data");
-            this.imageView.setImageBitmap(uploadImage);
+            Glide.with(getBaseContext()).load(uploadImage).into(this.imageView);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             uploadImage.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             this.imageArray = bos.toByteArray();
@@ -206,8 +207,9 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
             editTextName.setText(this.tmpName);
             editTextPrice.setText(this.tmpPrice);
             editTextBarcode.setText(this.tmpBarcode);
-            if (this.imageArray != null)
-                this.imageView.setImageBitmap(BitmapFactory.decodeByteArray(this.imageArray, 0, this.imageArray.length));
+            if (this.imageArray != null) {
+                Glide.with(getBaseContext()).load(this.imageArray).into(this.imageView);
+            }
             registerOnImageClick();
             this.scannerView.stopCamera();
             this.scannerView = null;
@@ -381,9 +383,9 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
             editTextName.setText(this.tmpName);
             editTextPrice.setText(this.tmpPrice);
             editTextBarcode.setText(myResult);
-            if (this.imageArray != null)
-                this.imageView.setImageBitmap(BitmapFactory.decodeByteArray(this.imageArray, 0, this.imageArray.length));
-
+            if (this.imageArray != null) {
+                Glide.with(getBaseContext()).load(this.imageArray).into(this.imageView);
+            }
             registerOnImageClick();
             this.scannerView.stopCamera();
             this.scannerView = null;

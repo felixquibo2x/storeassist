@@ -18,10 +18,6 @@ public class MainPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.fragmentManager = getFragmentManager();
-        FragmentTransaction ft = this.fragmentManager.beginTransaction();
-        ft.addToBackStack(BACK_STACK_TAG_INITIAL);
-        ft.commit();
         setContentView(R.layout.mainpage);
     }
 

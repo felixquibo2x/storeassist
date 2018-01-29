@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -75,11 +77,11 @@ public class ItemsProductsActivity extends AppCompatActivity {
             }
             byte[] data = items.get(position).getImage();
             if(data != null){
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                imageView.setImageBitmap(bitmap);
+                Glide.with(getBaseContext()).load(data).into(imageView);
             }else {
-                imageView.setImageResource(DEFAULT_IMAGE);
+                Glide.with(getBaseContext()).load(DEFAULT_IMAGE).into(imageView);
             }
+
             textViewName.setText(items.get(position).getItemName());
             textViewPrice.setText(new DecimalFormat("#,##0.00").format(items.get(position).getPrice()));
 
@@ -89,7 +91,6 @@ public class ItemsProductsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        getFragmentManager().popBackStack(MainPageActivity.BACK_STACK_TAG_INITIAL, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         Intent i = new Intent(this, MainPageActivity.class);
         startActivity(i);
     }
