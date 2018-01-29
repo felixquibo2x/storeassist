@@ -98,8 +98,8 @@ public class ItemsProductsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.helper = new StoreAssistDBHelper(this);
         setContentView(R.layout.items_products_page);
+        this.helper = new StoreAssistDBHelper(this);
         itemDao = new ItemDaoImpl(this.helper);
         populateListView("");
         registerOnItemClick();
@@ -127,6 +127,7 @@ public class ItemsProductsActivity extends AppCompatActivity {
     private void populateListView(String searchSt){
         try {
             ListView listView = (ListView) findViewById(R.id.list_view_items);
+            listView.requestFocus();
             if(searchSt.isEmpty()) {
                 this.items = this.itemDao.findAll();
             }else{
@@ -175,6 +176,12 @@ public class ItemsProductsActivity extends AppCompatActivity {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        ((ListView) findViewById(R.id.list_view_items)).requestFocus();
     }
 
     @Override
