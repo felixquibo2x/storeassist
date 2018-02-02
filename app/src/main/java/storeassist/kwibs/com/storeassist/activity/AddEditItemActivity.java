@@ -178,7 +178,7 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
             try {
                 InputStream is = getContentResolver().openInputStream(imageUri);
                 this.imageArray = getBytes(is);
-                Glide.with(getBaseContext()).load(this.imageArray).into(this.imageView);
+                imageView.setImageURI(imageUri);
             }catch (Exception ex){
                 Toast.makeText(this, "Error: "+ex.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -186,7 +186,7 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
         if(resultCode == RESULT_OK && requestCode == CAPTURE_IMAGE){
             Bundle b = data.getExtras();
             Bitmap uploadImage = (Bitmap) b.get("data");
-            Glide.with(getBaseContext()).load(uploadImage).into(this.imageView);
+            imageView.setImageBitmap(uploadImage);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             uploadImage.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             this.imageArray = bos.toByteArray();

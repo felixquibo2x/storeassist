@@ -129,7 +129,6 @@ public class ItemsProductsActivity extends AppCompatActivity {
     private void populateListView(String searchSt){
         try {
             SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.list_view_items);
-            listView.requestFocus();
             if(searchSt.isEmpty()) {
                 this.items = this.itemDao.findAll();
             }else{
@@ -231,7 +230,6 @@ public class ItemsProductsActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        ((ListView) findViewById(R.id.list_view_items)).requestFocus();
     }
 
     @Override
