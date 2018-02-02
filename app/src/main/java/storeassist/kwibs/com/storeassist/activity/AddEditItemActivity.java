@@ -125,7 +125,6 @@ public class AddEditItemActivity extends AppCompatActivity implements ZXingScann
                 FragmentTransaction ft = this.fragmentManager.beginTransaction();
                 ft.addToBackStack("barcodeScanning");
                 ft.commit();
-
                 scannerView.startCamera();
             }
         }

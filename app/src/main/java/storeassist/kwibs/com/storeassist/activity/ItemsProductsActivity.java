@@ -1,10 +1,8 @@
 package storeassist.kwibs.com.storeassist.activity;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,7 +10,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,9 +17,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -126,7 +128,7 @@ public class ItemsProductsActivity extends AppCompatActivity {
 
     private void populateListView(String searchSt){
         try {
-            ListView listView = (ListView) findViewById(R.id.list_view_items);
+            SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.list_view_items);
             listView.requestFocus();
             if(searchSt.isEmpty()) {
                 this.items = this.itemDao.findAll();
@@ -135,9 +137,50 @@ public class ItemsProductsActivity extends AppCompatActivity {
             }
             ItemViewAdapter adapter = new ItemViewAdapter();
             listView.setAdapter(adapter);
+            listView.setMenuCreator(createSwipeMenuItems());
+            registerOnSwipeDelete(listView, searchSt);
         }catch (Exception ex){
             Toast.makeText(ItemsProductsActivity.this, "Error: "+ex.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private SwipeMenuCreator createSwipeMenuItems(){
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                deleteItem.setWidth(170);
+                deleteItem.setIcon(R.drawable.ic_delete);
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        return creator;
+    }
+
+    private void registerOnSwipeDelete(final SwipeMenuListView listView, final String searchSt){
+        listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    case 0:
+                        Item i = items.get(position);
+                        try {
+                            itemDao.delete(i);
+                            deleteImageFile(AddEditItemActivity.IMAGE_FILE_PREFIX+i.getID());
+                            populateListView(searchSt);
+                            Toast.makeText(ItemsProductsActivity.this, "Item successfully deleted", Toast.LENGTH_LONG).show();
+                        }catch (Exception ex){
+                            Toast.makeText(ItemsProductsActivity.this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     private void registerOnItemClick(){
@@ -155,6 +198,13 @@ public class ItemsProductsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void deleteImageFile(String fileName){
+        File file = new File(getFilesDir(), fileName);
+        if(file.exists()){
+            deleteFile(fileName);
+        }
     }
 
     private byte[] readImage(String fileName) throws IOException {
