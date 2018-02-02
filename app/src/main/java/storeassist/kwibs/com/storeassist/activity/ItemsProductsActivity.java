@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import storeassist.kwibs.com.storeassist.R;
 import storeassist.kwibs.com.storeassist.database.bean.Item;
 import storeassist.kwibs.com.storeassist.database.core.StoreAssistDBHelper;
@@ -68,7 +69,7 @@ public class ItemsProductsActivity extends AppCompatActivity {
         public View getView(int position, View view, ViewGroup parent) {
             view = getLayoutInflater().inflate(R.layout.items_info, null);
 
-            ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
+            CircleImageView imageView = (CircleImageView) view.findViewById(R.id.image_view);
             TextView textViewName = (TextView) view.findViewById(R.id.text_view_name);
             TextView textViewPrice = (TextView) view.findViewById(R.id.text_view_price);
 
