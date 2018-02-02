@@ -9,21 +9,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_search"
+
+        <EditText
+            android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="10dp">
-
-            <EditText
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems = "15"
-                android:inputType="text"
-                android:hint = "Search..."/>
-        </android.support.design.widget.TextInputLayout>
+            android:ems = "15"
+            android:inputType="text"
+            android:hint = "Search..."
+            android:padding="5dp"
+            android:layout_margin="10dp"
+            android:textSize="20dp"
+            android:background="@drawable/round_edit_text"/>
 
         <com.baoyz.swipemenulistview.SwipeMenuListView
             android:layout_width="match_parent"

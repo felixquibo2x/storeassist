@@ -1,19 +1,13 @@
 package storeassist.kwibs.com.storeassist.activity;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 import storeassist.kwibs.com.storeassist.R;
-import storeassist.kwibs.com.storeassist.database.core.StoreAssistDBHelper;
 
 public class MainPageActivity extends AppCompatActivity {
-
-    public static final String BACK_STACK_TAG_INITIAL = "initial";
-    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

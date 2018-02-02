@@ -17,7 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:textAppearance="@android:style/TextAppearance.Holo.Large"
-            android:textSize="100px"/>
+            android:textSize="28pt"/>
 
         <Button
             android:text="Items / Products"
@@ -27,7 +27,12 @@
             android:id="@+id/button2"
             android:layout_below="@+id/textView"
             android:layout_centerHorizontal="true"
-            android:onClick="gotoItemsProduct" />
+            android:onClick="gotoItemsProduct"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:background="@drawable/rounded_button"
+            android:layout_marginBottom="7.5dp"
+            android:textSize="7pt"/>
 
         <Button
             android:text="Add Item"
@@ -39,7 +44,12 @@
             android:layout_alignStart="@+id/button8"
             android:layout_alignRight="@+id/button2"
             android:layout_alignEnd="@+id/button2"
-            android:onClick="gotoAddItem" />
+            android:onClick="gotoAddItem"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:background="@drawable/rounded_button"
+            android:layout_marginBottom="7.5dp"
+            android:textSize="7pt"/>
 
         <Button
             android:text="Scan Item"
@@ -51,7 +61,12 @@
             android:layout_alignStart="@+id/button2"
             android:layout_alignRight="@+id/button2"
             android:layout_alignEnd="@+id/button2"
-            android:onClick="scanItem" />
+            android:onClick="scanItem"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:background="@drawable/rounded_button"
+            android:layout_marginBottom="7.5dp"
+            android:textSize="7pt"/>
 
         <Button
             android:text="Settings"
@@ -62,7 +77,12 @@
             android:layout_alignLeft="@+id/button8"
             android:layout_alignStart="@+id/button8"
             android:layout_alignRight="@+id/button8"
-            android:layout_alignEnd="@+id/button8" />
+            android:layout_alignEnd="@+id/button8"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:background="@drawable/rounded_button"
+            android:layout_marginBottom="7.5dp"
+            android:textSize="7pt"/>
 
         <Button
             android:text="Exit"
@@ -74,6 +94,10 @@
             android:layout_alignStart="@+id/button4"
             android:layout_alignRight="@+id/button4"
             android:layout_alignEnd="@+id/button4"
-            android:onClick="exit" />
+            android:onClick="exit"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:background="@drawable/rounded_button"
+            android:textSize="7pt"/>
     </RelativeLayout>
 </LinearLayout>
